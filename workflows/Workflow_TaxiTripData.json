@@ -1,0 +1,59 @@
+{
+    "new_settings": {
+        "name": "Workflow_TaxiTrip",
+        "email_notifications": {
+            "no_alert_for_skipped_runs": false
+        },
+        "webhook_notifications": {},
+        "timeout_seconds": 0,
+        "max_concurrent_runs": 1,
+        "tasks": [
+            {
+                "task_key": "Trigger_TaxiTripData",
+                "run_if": "ALL_SUCCESS",
+                "notebook_task": {
+                    "notebook_path": "notebooks/main/process_taxi_trip_data",
+                    "base_parameters": {
+                        "Month": "2019-12",
+                        "debug": "false"
+                    },
+                    "source": "GIT"
+                },
+                "job_cluster_key": "Job_cluster",
+                "timeout_seconds": 0,
+                "email_notifications": {}
+            }
+        ],
+        "job_clusters": [
+            {
+                "job_cluster_key": "Job_cluster",
+                "new_cluster": {
+                    "spark_version": "13.2.x-scala2.12",
+                    "spark_conf": {
+                        "spark.databricks.delta.preview.enabled": "true"
+                    },
+                    "azure_attributes": {
+                        "first_on_demand": 1,
+                        "availability": "SPOT_WITH_FALLBACK_AZURE",
+                        "spot_bid_max_price": 100
+                    },
+                    "node_type_id": "Standard_DS3_v2",
+                    "enable_elastic_disk": true,
+                    "policy_id": "0010775D8632BA63",
+                    "data_security_mode": "SINGLE_USER",
+                    "runtime_engine": "STANDARD",
+                    "num_workers": 2
+                }
+            }
+        ],
+        "git_source": {
+            "git_url": "@repo_url",
+            "git_provider": "azureDevOpsServices",
+            "git_branch": "master"
+        },
+        "format": "MULTI_TASK",
+        "run_as": {
+            "user_name": ""
+        }
+    }
+}

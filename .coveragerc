@@ -1,0 +1,16 @@
+[run]
+omit = context.py
+
+[report]
+exclude_also =
+    def timed
+    def extract
+    def transform
+    def load
+    def get_logger
+    @timed
+    from
+    import
+    extract
+    transform
+    load

@@ -1,0 +1,47 @@
+trigger:
+  branches:
+    include:
+      - 'master'
+
+pr:
+  branches:
+    include:
+    - '*'
+
+variables:
+  - group: 'DatabricksConnection'
+
+name: 'Project CI Pipeline'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'
+    architecture: 'x64'
+
+- script: |
+    pip install -r requirements.txt
+  displayName: 'Install requirements'
+
+- script: | # the SPARK_REMOTE environment variable will be used by databricks-connect to initialize the DatabricksSession class (see documentations for more details)
+    export SPARK_REMOTE="sc://$(DATABRICKS-HOST):443/;token=$(DATABRICKS-TOKEN);x-databricks-cluster-id=$(DATABRICKS-CLUSTER-ID)" \
+    && pytest tests -v --junitxml=unit-testresults.xml  --cov=common --cov=scripts --cov-append --cov-report=xml:coverage.xml --cov-report=html:htmlcov
+  displayName: 'Run unit test'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/*-testresults.xml'
+    testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version) - Unit Test results'
+  condition: succeededOrFailed()
+  displayName: 'Publish unit test and linting results'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: 'coverage.xml'
+    reportDirectory: 'htmlcov'
+  displayName: 'Publish coverage results'
