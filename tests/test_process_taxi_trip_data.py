@@ -217,7 +217,7 @@ def test_df_drop_duplicate_based_on_row_num_does_not_return_duplicated_rows(inpu
                 partitionby=['VendorID','passenger_count','lpep_pickup_datetime',
                               'lpep_dropoff_datetime','PUlocationID','DOlocationID'], 
                 orderby=['lpep_pickup_datetime'],
-                asc='false')
+                asc=False)
   
   output_df_as_pandas = output_df.toPandas()
   
@@ -231,7 +231,7 @@ def test_df_drop_duplicate_based_on_row_num_throws_error_when_partition_clause_i
                   input_df, 
                   partitionby= [], 
                   orderby= ['lpep_pickup_datetime'],
-                  asc= 'false')
+                  asc= False)
 
 #@pytest.mark.skip(reason="to skip for now ...")  
 def test_df_drop_duplicate_based_on_row_num_throws_error_when_order_clause_is_empty(input_df):
@@ -241,7 +241,7 @@ def test_df_drop_duplicate_based_on_row_num_throws_error_when_order_clause_is_em
                   partitionby= ['VendorID','passenger_count','lpep_pickup_datetime',
                               'lpep_dropoff_datetime','PUlocationID','DOlocationID'], 
                   orderby= [],
-                  asc= 'false')
+                  asc= False)
 
 #@pytest.mark.skip(reason="to skip for now ...")
 def test_get_partition_list(spark):

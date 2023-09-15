@@ -20,7 +20,7 @@ debug = dbutils.widgets.get('debug')
 
 root = '/mnt/main/landingzone/taxiservice/transactionaldata/'
 logger = get_logger(
-    spark, name='TaxiLogger', debug=f'{debug}'
+    name='TaxiLogger', debug=f'{debug}'
 )
 
 # COMMAND ----------

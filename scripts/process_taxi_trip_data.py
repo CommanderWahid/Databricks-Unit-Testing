@@ -69,7 +69,7 @@ def transform(greenTaxiTripDataDF,yellowTaxiTripDataDF):
     
     logger.info("-->Drop duplication using row number") 
     partitionby= ['VendorID','PassengerCount','PickupTime','DropTime','PickupLocationId','DropLocationId','PaymentType','TripType','TripMode']
-    taxidata = df_drop_duplicate_based_on_row_num(df=taxidata, partitionby=partitionby, orderby=['PickupTime'], asc='false')
+    taxidata = df_drop_duplicate_based_on_row_num(df=taxidata, partitionby=partitionby, orderby=['PickupTime'], asc=False)
    
     logger.info("-->Cache Taxi data")    
     taxidata.cache()
@@ -104,12 +104,12 @@ def load(taxidata):
 dbutils.widgets.text('Month', '2019-12', 'Process Month (YYYY-MM)')
 Month = dbutils.widgets.get('Month')
 
-dbutils.widgets.text('debug', 'true', ['true','false'])
+dbutils.widgets.dropdown('debug', 'True', ['True','False'])
 debug = dbutils.widgets.get('debug')
 
 root = '/mnt/main/landingzone/taxiservice/transactionaldata/'
 logger = get_logger(
-    spark, name='TaxiLogger', debug=f'{debug}'
+    name='TaxiLogger', debug=eval(f'{debug}')
 )
 
 # workflow

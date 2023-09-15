@@ -12,7 +12,7 @@
                 "task_key": "Trigger_TaxiTripData",
                 "run_if": "ALL_SUCCESS",
                 "notebook_task": {
-                    "notebook_path": "notebooks/main/process_taxi_trip_data",
+                    "notebook_path": "notebooks/process_taxi_trip_data",
                     "base_parameters": {
                         "Month": "2019-12",
                         "debug": "false"

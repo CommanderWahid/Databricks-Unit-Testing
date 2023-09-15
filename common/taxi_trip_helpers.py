@@ -5,6 +5,10 @@ from pyspark.sql.window import Window
 import logging
 from functools import wraps
 from time import time
+# Databricks objects can be imported from Python modules
+# To use a Databricks built-in object in a Python module, 
+# import it from databricks.sdk.runtime.
+# from databricks.sdk.runtime import *
 
 
 class WindowFunctionWithoutPartitionByColumnsError(Exception):
@@ -27,12 +31,12 @@ class MergeDatafarmeIntoDeltaTableError(Exception):
    """Check Errors Message For More Details"""
    pass
 
-def get_logger(spark: SparkSession, name: str = '', debug: str = 'true'):
-    if (bool(debug)):
+def get_logger(name: str, debug: bool = True):
+    if (debug):
         logger = logging.getLogger(name)
         logger.setLevel(logging.INFO)
     else:
-        log4j_logger = spark.sc._jvm.org.apache.log4j 
+        log4j_logger = spark.sparkContext._jvm.org.apache.log4j 
         logger = log4j_logger.LogManager.getLogger(name)
     return logger
 
@@ -130,7 +134,7 @@ def df_col_add_unchanged(df: DataFrame,
 def df_drop_duplicate_based_on_row_num(df: DataFrame, 
                                        partitionby: list = [],
                                        orderby: list = [],
-                                       asc: str = 'false'
+                                       asc: bool = False
                                       )-> DataFrame:
     if (not partitionby):
         raise WindowFunctionWithoutPartitionByColumnsError()
@@ -138,7 +142,7 @@ def df_drop_duplicate_based_on_row_num(df: DataFrame,
     if (not orderby):
         raise WindowFunctionWithoutOrderByColumnsError()
     
-    if (bool(asc)):
+    if (asc):
         window = Window.partitionBy(partitionby).orderBy(orderby)
     else:
         window = Window.partitionBy(partitionby).orderBy(*[desc(c) for c in orderby])
